@@ -1,4 +1,4 @@
-rootProject.name = "Interfaces Multiplataforma"
+rootProject.name = "InterfacesMultiplataforma"
 
 pluginManagement {
     repositories {

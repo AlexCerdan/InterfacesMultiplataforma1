@@ -14,8 +14,8 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import `interfaces multiplataforma`.shared.generated.resources.Res
-import `interfaces multiplataforma`.shared.generated.resources.compose_multiplatform
+import interfacesmultiplataforma.shared.generated.resources.Res
+import interfacesmultiplataforma.shared.generated.resources.compose_multiplatform
 import org.jetbrains.compose.resources.painterResource
 
 
