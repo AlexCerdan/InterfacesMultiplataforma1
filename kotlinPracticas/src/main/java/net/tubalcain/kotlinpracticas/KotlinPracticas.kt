@@ -11,4 +11,6 @@ fun main() {
     edad = 21
 
     println("Nueva edad: $edad")
+
+    println("Nombre y edad: $nombre, $edad")
 }
