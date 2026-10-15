@@ -13,4 +13,7 @@ fun ejemplo01() {
 
     println("El nombre del cliente es: $nombre")
     println("La edad del cliente es: $edad")
+
+    edad = edad + 2
+    println("La nueva edad del cliente es: $edad")
 }
