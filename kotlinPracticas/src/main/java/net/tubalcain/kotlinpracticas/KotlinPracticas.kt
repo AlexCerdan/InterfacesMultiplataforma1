@@ -2,15 +2,15 @@ package net.tubalcain.kotlinpracticas
 
 
 fun main() {
-    val nombre = "Ana"
-    var edad = 20
+    clearConsole()
+    ejemplo01()
+}
 
-    println("Nombre: $nombre")
-    println("Edad: $edad")
 
-    edad = 21
+fun ejemplo01() {
+    val nombre = "Juan"
+    var edad = 23
 
-    println("Nueva edad: $edad")
-
-    println("Nombre y edad: $nombre, $edad")
+    println("El nombre del cliente es: $nombre")
+    println("La edad del cliente es: $edad")
 }
