@@ -3,7 +3,7 @@ package net.tubalcain.kotlinpracticas
 
 fun main() {
     clearConsole()
-    ejemplo03()
+    ejemplo02()
 }
 
 
@@ -27,6 +27,7 @@ fun ejemplo02() {
     val letra: Char = 'J'
     val matriculado = true
     val repetidor = true
+    val curso = 4
 
     if (peso > 80) {
         println("Peso supera la media")
@@ -40,6 +41,13 @@ fun ejemplo02() {
 
     if(matriculado && repetidor) {
         println("Este alumno esta actualmente matriculado y es repetidor.")
+    }
+
+    when(curso) {
+        1 -> println("Alumno de primero")
+        2 -> println("Alumno de segundo")
+        3 -> println("Alumno de tercero")
+        4 -> println("Alumno de cuarto")
     }
 }
 
