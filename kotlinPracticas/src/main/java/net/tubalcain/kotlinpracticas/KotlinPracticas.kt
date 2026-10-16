@@ -17,3 +17,13 @@ fun ejemplo01() {
     edad = edad + 2
     println("La nueva edad del cliente es: $edad")
 }
+
+fun ejemplo02() {
+    val nombre: String = "Juan"
+    val apellidos: String = "Gonzalez Diaz"
+    var peso: Int = 83
+    val estatura: Double = 1.75
+    var domicilio: String = "Avda. Libertad, 8"
+    val letra: Char = 'J'
+}
+
