@@ -29,25 +29,36 @@ fun ejemplo02() {
     val repetidor = true
     val curso = 4
 
+
+    // 2 caminos, A o B
     if (peso > 80) {
         println("Peso supera la media")
     } else {
         println("Peso inferior a la media")
     }
 
+    // Condicion unica
     if (!matriculado) {
         println("Esta persona no es actualmente alumno.")
     }
 
+    // Condicion multiple
     if(matriculado && repetidor) {
         println("Este alumno esta actualmente matriculado y es repetidor.")
     }
 
+    // Selector de opciones 'when'
     when(curso) {
         1 -> println("Alumno de primero")
         2 -> println("Alumno de segundo")
         3 -> println("Alumno de tercero")
         4 -> println("Alumno de cuarto")
     }
+
+    // Bucle 'for' - Repetir algo X veces
+    for(i in 1..5) {
+        println("Contador = $i")
+    }
+
 }
 
