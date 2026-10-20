@@ -13,7 +13,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
 
         setContent {
-            NombreUsuario()
+            PantallaRegistro()
         }
     }
 }
@@ -21,6 +21,6 @@ class MainActivity : ComponentActivity() {
 @Preview
 @Composable
 fun AppAndroidPreview() {
-    RegisterScreen()
+//    RegisterScreen()
 }
 
