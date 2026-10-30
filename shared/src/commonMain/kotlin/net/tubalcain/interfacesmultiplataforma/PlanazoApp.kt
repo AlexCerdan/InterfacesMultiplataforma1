@@ -1,0 +1,404 @@
+package net.tubalcain.interfacesmultiplataforma
+
+import androidx.compose.foundation.background
+import androidx.compose.foundation.horizontalScroll
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.widthIn
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Button
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.FilterChip
+import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+
+data class Evento(
+    val nombre: String,
+    val categoria: String,
+    val fecha: String,
+    val emoji: String,
+    val descripcion: String
+)
+
+@Composable
+fun PlanazoApp() {
+
+    val fondo = Color(0xFF101018)
+    val tarjeta = Color(0xFF252535)
+    val morado = Color(0xFFB5A2FF)
+
+    val eventos = remember {
+        listOf(
+            Evento(
+                "Festival Urbano",
+                "Música",
+                "Sábado · 20:00",
+                "🎤",
+                "Festival de música urbana."
+            ),
+            Evento(
+                "Torneo EA FC",
+                "Gaming",
+                "Viernes · 17:00",
+                "🎮",
+                "Competición de fútbol virtual."
+            ),
+            Evento(
+                "Noche de Streamers",
+                "Creadores",
+                "Viernes · 19:30",
+                "📺",
+                "Encuentro de creadores de contenido."
+            ),
+            Evento(
+                "Batalla de DJs",
+                "Música",
+                "Sábado · 22:00",
+                "🎧",
+                "Sesión de música y DJs."
+            ),
+            Evento(
+                "Torneo Minecraft",
+                "Gaming",
+                "Domingo · 18:00",
+                "🏗️",
+                "Retos de construcción por equipos."
+            )
+        )
+    }
+
+    // ESTADOS
+    var busqueda by remember { mutableStateOf("") }
+    var categoriaElegida by remember { mutableStateOf("Todos") }
+
+    // NAVEGACIÓN
+    var pantalla by remember { mutableStateOf("lista") }
+    var eventoSeleccionado by remember {
+        mutableStateOf<Evento?>(null)
+    }
+
+    // FORMULARIO
+    var nombre by remember { mutableStateOf("") }
+    var correo by remember { mutableStateOf("") }
+    var inscrito by remember { mutableStateOf(false) }
+
+    // FILTRADO
+    val eventosFiltrados = eventos.filter { evento ->
+        evento.nombre.contains(busqueda, ignoreCase = true) &&
+                (categoriaElegida == "Todos" ||
+                        evento.categoria == categoriaElegida)
+    }
+
+    MaterialTheme {
+
+        Scaffold(
+            containerColor = fondo,
+
+            topBar = {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .background(fondo)
+                        .padding(20.dp),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(
+                        "🎟️ PLANAZO",
+                        color = Color.White,
+                        fontSize = 22.sp,
+                        fontWeight = FontWeight.Bold
+                    )
+
+                    Text(
+                        "DAM2",
+                        color = morado
+                    )
+                }
+            }
+
+        ) { padding ->
+
+            // La LazyColumn ocupa toda la pantalla.
+            // El contenido se limita a 850.dp.
+            LazyColumn(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(padding),
+                contentPadding = PaddingValues(16.dp),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.spacedBy(16.dp)
+            ) {
+
+                if (pantalla == "lista") {
+
+                    // TÍTULO
+                    item {
+                        Column(
+                            modifier = Modifier
+                                .widthIn(max = 850.dp)
+                                .fillMaxWidth()
+                        ) {
+                            Text(
+                                "¿Qué plan tienes?",
+                                color = Color.White,
+                                fontSize = 28.sp,
+                                fontWeight = FontWeight.Bold
+                            )
+
+                            Text(
+                                "Descubre eventos que no te puedes perder",
+                                color = Color.LightGray
+                            )
+                        }
+                    }
+
+                    // BUSCADOR
+                    item {
+                        OutlinedTextField(
+                            value = busqueda,
+                            onValueChange = {
+                                busqueda = it
+                            },
+                            label = {
+                                Text("Buscar eventos")
+                            },
+                            modifier = Modifier
+                                .widthIn(max = 850.dp)
+                                .fillMaxWidth(),
+                            singleLine = true,
+                            colors = OutlinedTextFieldDefaults.colors(
+                                focusedTextColor = Color.White
+                            )
+                        )
+                    }
+
+                    // FILTROS POR CATEGORÍA
+                    item {
+                        Row(
+                            modifier = Modifier
+                                .widthIn(max = 850.dp)
+                                .fillMaxWidth()
+                                .horizontalScroll(rememberScrollState()),
+                            horizontalArrangement = Arrangement.spacedBy(8.dp)
+                        ) {
+                            listOf(
+                                "Todos",
+                                "Música",
+                                "Gaming",
+                                "Creadores"
+                            ).forEach { categoria ->
+
+                                FilterChip(
+                                    selected = categoriaElegida == categoria,
+                                    onClick = {
+                                        categoriaElegida = categoria
+                                    },
+                                    label = {
+                                        Text(categoria)
+                                    }
+                                )
+                            }
+                        }
+                    }
+
+                    // LISTA DE EVENTOS
+                    items(eventosFiltrados) { evento ->
+
+                        Card(
+                            modifier = Modifier
+                                .widthIn(max = 850.dp)
+                                .fillMaxWidth(),
+                            onClick = {
+                                eventoSeleccionado = evento
+                                pantalla = "detalle"
+
+                                nombre = ""
+                                correo = ""
+                                inscrito = false
+                            },
+                            shape = RoundedCornerShape(12.dp),
+                            colors = CardDefaults.cardColors(
+                                containerColor = tarjeta
+                            )
+                        ) {
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(20.dp),
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.spacedBy(16.dp)
+                            ) {
+
+                                Text(
+                                    evento.emoji,
+                                    fontSize = 36.sp
+                                )
+
+                                Column(
+                                    modifier = Modifier.weight(1f)
+                                ) {
+                                    Text(
+                                        evento.nombre,
+                                        color = Color.White,
+                                        fontSize = 20.sp,
+                                        fontWeight = FontWeight.Bold
+                                    )
+
+                                    Text(
+                                        evento.categoria,
+                                        color = morado
+                                    )
+
+                                    Text(
+                                        evento.fecha,
+                                        color = Color.LightGray
+                                    )
+                                }
+
+                                Text(
+                                    "›",
+                                    color = morado,
+                                    fontSize = 30.sp
+                                )
+                            }
+                        }
+                    }
+
+                    if (eventosFiltrados.isEmpty()) {
+                        item {
+                            Text(
+                                "No se encontraron eventos",
+                                color = Color.LightGray
+                            )
+                        }
+                    }
+
+                } else {
+
+                    // PANTALLA DE DETALLE
+                    item {
+
+                        Column(
+                            modifier = Modifier
+                                .widthIn(max = 850.dp)
+                                .fillMaxWidth(),
+                            verticalArrangement = Arrangement.spacedBy(16.dp)
+                        ) {
+
+                            TextButton(
+                                onClick = {
+                                    pantalla = "lista"
+                                }
+                            ) {
+                                Text("← Volver")
+                            }
+
+                            eventoSeleccionado?.let { evento ->
+
+                                Text(
+                                    evento.emoji,
+                                    fontSize = 60.sp
+                                )
+
+                                Text(
+                                    evento.nombre,
+                                    color = Color.White,
+                                    fontSize = 28.sp,
+                                    fontWeight = FontWeight.Bold
+                                )
+
+                                Text(
+                                    evento.fecha,
+                                    color = morado,
+                                    fontSize = 18.sp
+                                )
+
+                                Text(
+                                    evento.descripcion,
+                                    color = Color.LightGray
+                                )
+
+                                HorizontalDivider()
+
+                                Text(
+                                    "Apúntate al evento",
+                                    color = Color.White,
+                                    fontSize = 22.sp,
+                                    fontWeight = FontWeight.Bold
+                                )
+
+                                OutlinedTextField(
+                                    value = nombre,
+                                    onValueChange = {
+                                        nombre = it
+                                    },
+                                    label = {
+                                        Text("Nombre")
+                                    },
+                                    modifier = Modifier.fillMaxWidth(),
+                                    singleLine = true
+                                )
+
+                                OutlinedTextField(
+                                    value = correo,
+                                    onValueChange = {
+                                        correo = it
+                                    },
+                                    label = {
+                                        Text("Correo electrónico")
+                                    },
+                                    modifier = Modifier.fillMaxWidth(),
+                                    singleLine = true
+                                )
+
+                                Button(
+                                    onClick = {
+                                        inscrito = true
+                                    },
+                                    enabled = nombre.isNotBlank() &&
+                                            correo.contains("@")
+                                ) {
+                                    Text("Apuntarme")
+                                }
+
+                                if (inscrito) {
+                                    Text(
+                                        "¡Inscripción simulada completada!",
+                                        color = morado,
+                                        fontWeight = FontWeight.Bold
+                                    )
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
