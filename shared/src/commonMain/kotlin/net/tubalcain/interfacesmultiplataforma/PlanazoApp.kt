@@ -214,13 +214,12 @@ fun PlanazoApp() {
                                 "Creadores"
                             ).forEach { categoria ->
 
-                                FilterChip(
-                                    selected = categoriaElegida == categoria,
+                                CategoriaChip(
+                                    categoria = categoria,
+                                    seleccionada =
+                                        categoriaElegida == categoria,
                                     onClick = {
                                         categoriaElegida = categoria
-                                    },
-                                    label = {
-                                        Text(categoria)
                                     }
                                 )
                             }
