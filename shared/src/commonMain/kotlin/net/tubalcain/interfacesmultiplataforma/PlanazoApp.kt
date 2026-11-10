@@ -230,10 +230,8 @@ fun PlanazoApp() {
                     // LISTA DE EVENTOS
                     items(eventosFiltrados) { evento ->
 
-                        Card(
-                            modifier = Modifier
-                                .widthIn(max = 850.dp)
-                                .fillMaxWidth(),
+                        EventoCard(
+                            evento = evento,
                             onClick = {
                                 eventoSeleccionado = evento
                                 pantalla = "detalle"
@@ -241,53 +239,8 @@ fun PlanazoApp() {
                                 nombre = ""
                                 correo = ""
                                 inscrito = false
-                            },
-                            shape = RoundedCornerShape(12.dp),
-                            colors = CardDefaults.cardColors(
-                                containerColor = tarjeta
-                            )
-                        ) {
-                            Row(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(20.dp),
-                                verticalAlignment = Alignment.CenterVertically,
-                                horizontalArrangement = Arrangement.spacedBy(16.dp)
-                            ) {
-
-                                Text(
-                                    evento.emoji,
-                                    fontSize = 36.sp
-                                )
-
-                                Column(
-                                    modifier = Modifier.weight(1f)
-                                ) {
-                                    Text(
-                                        evento.nombre,
-                                        color = Color.White,
-                                        fontSize = 20.sp,
-                                        fontWeight = FontWeight.Bold
-                                    )
-
-                                    Text(
-                                        evento.categoria,
-                                        color = morado
-                                    )
-
-                                    Text(
-                                        evento.fecha,
-                                        color = Color.LightGray
-                                    )
-                                }
-
-                                Text(
-                                    "›",
-                                    color = morado,
-                                    fontSize = 30.sp
-                                )
                             }
-                        }
+                        )
                     }
 
                     if (eventosFiltrados.isEmpty()) {
