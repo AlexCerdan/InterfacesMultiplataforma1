@@ -226,6 +226,17 @@ fun PlanazoApp() {
                         }
                     }
 
+                    item {
+                        Text(
+                            text = "Eventos encontrados: " +
+                                    eventosFiltrados.size,
+                            color = Color.LightGray,
+                            modifier = Modifier
+                                .widthIn(max = 850.dp)
+                                .fillMaxWidth()
+                        )
+                    }
+
                     // LISTA DE EVENTOS
                     items(eventosFiltrados) { evento ->
 
