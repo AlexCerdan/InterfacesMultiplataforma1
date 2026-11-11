@@ -1,5 +1,6 @@
 package net.tubalcain.interfacesmultiplataforma
 
+import BotonLimpiarFiltros
 import androidx.compose.foundation.background
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
@@ -13,15 +14,10 @@ import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.FilterChip
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -180,21 +176,14 @@ fun PlanazoApp() {
 
                     // BUSCADOR
                     item {
-                        OutlinedTextField(
-                            value = busqueda,
-                            onValueChange = {
-                                busqueda = it
-                            },
-                            label = {
-                                Text("Buscar eventos")
+                        BuscadorEventos(
+                            texto = busqueda,
+                            onTextoChange = { nuevoTexto ->
+                                busqueda = nuevoTexto
                             },
                             modifier = Modifier
                                 .widthIn(max = 850.dp)
-                                .fillMaxWidth(),
-                            singleLine = true,
-                            colors = OutlinedTextFieldDefaults.colors(
-                                focusedTextColor = Color.White
-                            )
+                                .fillMaxWidth()
                         )
                     }
 
@@ -224,6 +213,15 @@ fun PlanazoApp() {
                                 )
                             }
                         }
+                    }
+
+                    item {
+                        BotonLimpiarFiltros(
+                            onClick = {
+                                busqueda = ""
+                                categoriaElegida = "Todos"
+                            }
+                        )
                     }
 
                     item {
