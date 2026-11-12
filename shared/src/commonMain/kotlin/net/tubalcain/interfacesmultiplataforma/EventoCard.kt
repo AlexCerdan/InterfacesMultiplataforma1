@@ -1,6 +1,7 @@
 package net.tubalcain.interfacesmultiplataforma
 
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -23,7 +24,8 @@ import androidx.compose.ui.unit.sp
 fun EventoCard(
     evento: Evento,
     onClick: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    mostrarDescripcion: Boolean = false
 ) {
     val tarjeta = Color(0xFF252535)
     val morado = Color(0xFFB5A2FF)
@@ -69,6 +71,16 @@ fun EventoCard(
                     text = evento.fecha,
                     color = Color.LightGray
                 )
+
+                AnimatedVisibility(
+                    visible = mostrarDescripcion
+                ) {
+                    Text(
+                        text = evento.descripcion,
+                        color = Color.LightGray,
+                        modifier = Modifier.padding(top = 8.dp)
+                    )
+                }
             }
 
             Text(

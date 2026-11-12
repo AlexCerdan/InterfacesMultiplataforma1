@@ -91,6 +91,7 @@ fun PlanazoApp() {
     // ESTADOS
     var busqueda by remember { mutableStateOf("") }
     var categoriaElegida by remember { mutableStateOf("Todos") }
+    var mostrarDescripciones by remember { mutableStateOf(false) }
 
     // NAVEGACIÓN
     var pantalla by remember { mutableStateOf("lista") }
@@ -216,12 +217,32 @@ fun PlanazoApp() {
                     }
 
                     item {
-                        BotonLimpiarFiltros(
-                            onClick = {
-                                busqueda = ""
-                                categoriaElegida = "Todos"
+
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.spacedBy(16.dp)
+                        ) {
+                            BotonLimpiarFiltros(
+                                onClick = {
+                                    busqueda = ""
+                                    categoriaElegida = "Todos"
+                                }
+                            )
+
+                            Button(
+                                onClick = {
+                                    mostrarDescripciones = !mostrarDescripciones
+                                }
+                            ) {
+                                Text(
+                                    if (mostrarDescripciones)
+                                        "Ocultar descripciones"
+                                    else
+                                        "Mostrar descripciones"
+                                )
                             }
-                        )
+                        }
+
                     }
 
                     item {
@@ -235,11 +256,12 @@ fun PlanazoApp() {
                         )
                     }
 
+
                     // LISTA DE EVENTOS
                     items(eventosFiltrados) { evento ->
-
                         EventoCard(
                             evento = evento,
+                            mostrarDescripcion = mostrarDescripciones,
                             onClick = {
                                 eventoSeleccionado = evento
                                 pantalla = "detalle"
