@@ -48,9 +48,7 @@ data class Evento(
 
 @Composable
 fun PlanazoApp() {
-
     val fondo = Color(0xFF101018)
-    val tarjeta = Color(0xFF252535)
     val morado = Color(0xFFB5A2FF)
 
     val eventos = remember {
@@ -93,39 +91,37 @@ fun PlanazoApp() {
         )
     }
 
-    // ESTADOS
+    // Estados de búsqueda, filtros, navegación y formulario.
     var busqueda by remember { mutableStateOf("") }
     var categoriaElegida by remember { mutableStateOf("Todos") }
     var mostrarDescripciones by remember { mutableStateOf(false) }
-
-    // NAVEGACIÓN
     var pantalla by remember { mutableStateOf("lista") }
-    var eventoSeleccionado by remember {
-        mutableStateOf<Evento?>(null)
-    }
+    var eventoSeleccionado by remember { mutableStateOf<Evento?>(null) }
 
-    // FORMULARIO
     var nombre by remember { mutableStateOf("") }
     var correo by remember { mutableStateOf("") }
     var inscrito by remember { mutableStateOf(false) }
 
-    // FILTRADO
     val eventosFiltrados = eventos.filter { evento ->
         evento.nombre.contains(busqueda, ignoreCase = true) &&
-                (categoriaElegida == "Todos" ||
-                        evento.categoria == categoriaElegida)
+                (categoriaElegida == "Todos" || evento.categoria == categoriaElegida)
     }
 
-    // SNACKBAR
     val snackbarHostState = remember { SnackbarHostState() }
     val scope = rememberCoroutineScope()
 
-    MaterialTheme {
+    // Abre el detalle y reinicia los datos del formulario para el nuevo evento.
+    fun abrirDetalle(evento: Evento) {
+        eventoSeleccionado = evento
+        pantalla = "detalle"
+        nombre = ""
+        correo = ""
+        inscrito = false
+    }
 
+    MaterialTheme {
         Scaffold(
-            snackbarHost = {
-                SnackbarHost(snackbarHostState)
-            },
+            snackbarHost = { SnackbarHost(snackbarHostState) },
             containerColor = fondo,
             topBar = {
                 Row(
@@ -137,23 +133,15 @@ fun PlanazoApp() {
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Text(
-                        "🎟️ PLANAZO",
+                        text = "🎟️ PLANAZO",
                         color = Color.White,
                         fontSize = 22.sp,
                         fontWeight = FontWeight.Bold
                     )
-
-                    Text(
-                        "DAM2",
-                        color = morado
-                    )
+                    Text(text = "DAM2", color = morado)
                 }
             }
-
         ) { padding ->
-
-            // La LazyColumn ocupa toda la pantalla.
-            // El contenido se limita a 850.dp.
             LazyColumn(
                 modifier = Modifier
                     .fillMaxSize()
@@ -162,44 +150,38 @@ fun PlanazoApp() {
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
-
                 if (pantalla == "lista") {
-
-                    // TÍTULO
+                    // CabeceraSeccion se reutiliza en la pantalla de lista.
                     item {
-                        Column(
-                            modifier = Modifier
-                                .widthIn(max = 850.dp)
-                                .fillMaxWidth()
-                        ) {
-                            Text(
-                                "¿Qué plan tienes?",
-                                color = Color.White,
-                                fontSize = 28.sp,
-                                fontWeight = FontWeight.Bold
-                            )
-
-                            Text(
-                                "Descubre eventos que no te puedes perder",
-                                color = Color.LightGray
-                            )
-                        }
-                    }
-
-                    // BUSCADOR
-                    item {
-                        BuscadorEventos(
-                            texto = busqueda,
-                            onTextoChange = { nuevoTexto ->
-                                busqueda = nuevoTexto
-                            },
+                        CabeceraSeccion(
+                            titulo = "¿Qué plan tienes?",
+                            subtitulo = "Descubre eventos que no te puedes perder",
                             modifier = Modifier
                                 .widthIn(max = 850.dp)
                                 .fillMaxWidth()
                         )
                     }
 
-                    // FILTROS POR CATEGORÍA
+                    // EventoDestacado aparece encima de los resultados.
+                    item {
+                        val destacado = eventos.first()
+                        EventoDestacado(
+                            evento = destacado,
+                            onClick = { abrirDetalle(destacado) },
+                            modifier = Modifier.widthIn(max = 850.dp)
+                        )
+                    }
+
+                    item {
+                        BuscadorEventos(
+                            texto = busqueda,
+                            onTextoChange = { nuevoTexto -> busqueda = nuevoTexto },
+                            modifier = Modifier
+                                .widthIn(max = 850.dp)
+                                .fillMaxWidth()
+                        )
+                    }
+
                     item {
                         Row(
                             modifier = Modifier
@@ -208,29 +190,21 @@ fun PlanazoApp() {
                                 .horizontalScroll(rememberScrollState()),
                             horizontalArrangement = Arrangement.spacedBy(8.dp)
                         ) {
-                            listOf(
-                                "Todos",
-                                "Música",
-                                "Gaming",
-                                "Creadores"
-                            ).forEach { categoria ->
-
+                            listOf("Todos", "Música", "Gaming", "Creadores").forEach { categoria ->
                                 CategoriaChip(
                                     categoria = categoria,
-                                    seleccionada =
-                                        categoriaElegida == categoria,
-                                    onClick = {
-                                        categoriaElegida = categoria
-                                    }
+                                    seleccionada = categoriaElegida == categoria,
+                                    onClick = { categoriaElegida = categoria }
                                 )
                             }
                         }
                     }
 
                     item {
-
                         Row(
-                            modifier = Modifier.fillMaxWidth(),
+                            modifier = Modifier
+                                .widthIn(max = 850.dp)
+                                .fillMaxWidth(),
                             horizontalArrangement = Arrangement.spacedBy(16.dp)
                         ) {
                             BotonLimpiarFiltros(
@@ -246,20 +220,19 @@ fun PlanazoApp() {
                                 }
                             ) {
                                 Text(
-                                    if (mostrarDescripciones)
+                                    if (mostrarDescripciones) {
                                         "Ocultar descripciones"
-                                    else
+                                    } else {
                                         "Mostrar descripciones"
+                                    }
                                 )
                             }
                         }
-
                     }
 
                     item {
                         Text(
-                            text = "Eventos encontrados: " +
-                                    eventosFiltrados.size,
+                            text = "Eventos encontrados: ${eventosFiltrados.size}",
                             color = Color.LightGray,
                             modifier = Modifier
                                 .widthIn(max = 850.dp)
@@ -267,81 +240,61 @@ fun PlanazoApp() {
                         )
                     }
 
-
-                    // LISTA DE EVENTOS
-                    items(eventosFiltrados) { evento ->
-                        EventoCard(
-                            evento = evento,
-                            mostrarDescripcion = mostrarDescripciones,
-                            onClick = {
-                                eventoSeleccionado = evento
-                                pantalla = "detalle"
-
-                                nombre = ""
-                                correo = ""
-                                inscrito = false
-                            }
-                        )
-                    }
-
                     if (eventosFiltrados.isEmpty()) {
+                        // Sustituye al Text anterior por el componente EstadoVacio.
                         item {
-                            Text(
-                                "No se encontraron eventos",
-                                color = Color.LightGray
+                            EstadoVacio(
+                                titulo = "No hay eventos",
+                                mensaje = "Prueba con otra búsqueda o cambia la categoría.",
+                                emoji = "🎟️",
+                                modifier = Modifier.widthIn(max = 850.dp)
+                            )
+                        }
+                    } else {
+                        items(eventosFiltrados) { evento ->
+                            EventoCard(
+                                evento = evento,
+                                mostrarDescripcion = mostrarDescripciones,
+                                onClick = { abrirDetalle(evento) }
                             )
                         }
                     }
-
                 } else {
-
-                    // PANTALLA DE DETALLE
                     item {
-
                         Column(
                             modifier = Modifier
                                 .widthIn(max = 850.dp)
                                 .fillMaxWidth(),
                             verticalArrangement = Arrangement.spacedBy(16.dp)
                         ) {
-
-                            TextButton(
-                                onClick = {
-                                    pantalla = "lista"
-                                }
-                            ) {
+                            TextButton(onClick = { pantalla = "lista" }) {
                                 Text("← Volver")
                             }
 
                             eventoSeleccionado?.let { evento ->
-
-                                Text(
-                                    evento.emoji,
-                                    fontSize = 60.sp
+                                // CabeceraSeccion se reutiliza también en el detalle.
+                                CabeceraSeccion(
+                                    titulo = evento.nombre,
+                                    subtitulo = "Información e inscripción al evento"
                                 )
 
-                                Text(
-                                    evento.nombre,
-                                    color = Color.White,
-                                    fontSize = 28.sp,
-                                    fontWeight = FontWeight.Bold
-                                )
+                                Text(text = evento.emoji, fontSize = 60.sp)
 
                                 Text(
-                                    evento.fecha,
+                                    text = evento.fecha,
                                     color = morado,
                                     fontSize = 18.sp
                                 )
 
                                 Text(
-                                    evento.descripcion,
+                                    text = evento.descripcion,
                                     color = Color.LightGray
                                 )
 
                                 HorizontalDivider()
 
                                 Text(
-                                    "Apúntate al evento",
+                                    text = "Apúntate al evento",
                                     color = Color.White,
                                     fontSize = 22.sp,
                                     fontWeight = FontWeight.Bold
@@ -349,12 +302,8 @@ fun PlanazoApp() {
 
                                 OutlinedTextField(
                                     value = nombre,
-                                    onValueChange = {
-                                        nombre = it
-                                    },
-                                    label = {
-                                        Text("Nombre")
-                                    },
+                                    onValueChange = { nombre = it },
+                                    label = { Text("Nombre") },
                                     modifier = Modifier.fillMaxWidth(),
                                     singleLine = true,
                                     colors = OutlinedTextFieldDefaults.colors(
@@ -370,12 +319,8 @@ fun PlanazoApp() {
 
                                 OutlinedTextField(
                                     value = correo,
-                                    onValueChange = {
-                                        correo = it
-                                    },
-                                    label = {
-                                        Text("Correo electrónico")
-                                    },
+                                    onValueChange = { correo = it },
+                                    label = { Text("Correo electrónico") },
                                     modifier = Modifier.fillMaxWidth(),
                                     singleLine = true,
                                     colors = OutlinedTextFieldDefaults.colors(
@@ -413,7 +358,6 @@ fun PlanazoApp() {
 
                                                 else -> {
                                                     inscrito = true
-
                                                     snackbarHostState.showSnackbar(
                                                         "¡Inscripción realizada correctamente!"
                                                     )
@@ -426,10 +370,9 @@ fun PlanazoApp() {
                                     Text("Apuntarme")
                                 }
 
-
                                 if (inscrito) {
                                     Text(
-                                        "¡Inscripción simulada completada!",
+                                        text = "¡Inscripción simulada completada!",
                                         color = morado,
                                         fontWeight = FontWeight.Bold
                                     )
@@ -442,3 +385,4 @@ fun PlanazoApp() {
         }
     }
 }
+
